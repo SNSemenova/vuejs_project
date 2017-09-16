@@ -9,7 +9,8 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   state: {
     results: [],
-    config: config
+    config: config,
+    loading: false
   },
   getters: {
     results(state) {
@@ -19,6 +20,9 @@ const store = new Vuex.Store({
     },
     config(state) {
       return state.config
+    },
+    loading(state) {
+      return state.loading
     }
   },
   mutations: {
@@ -28,11 +32,13 @@ const store = new Vuex.Store({
   },
   actions: {
     search({ commit }, query) {
+      commit('set', { type: 'loading', items: true })
       const url = this.getters.config.url
       var resource = Vue.resource(url)
       resource.get({ rows: query}).then(function (response) {
         const results = response.data
         commit('set', { type: 'results', items: results })
+        commit('set', { type: 'loading', items: false })
       }, function (error) {
         console.log(error)
       })

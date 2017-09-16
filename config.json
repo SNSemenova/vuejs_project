@@ -22,6 +22,10 @@
       "header": "Phone"
     }
   ],
+  "size": {
+    "big": 1000,
+    "small": 32
+  },
   "features": {
     "filtration": true,
     "pagination": true,

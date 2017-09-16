@@ -1,6 +1,12 @@
 <template>
   <div>
-    <table>
+      <input type="radio" id="small" :value="config.size.small" v-model="picked" v-on:click="search" :disabled="loading">
+      <label for="small">Small set</label>
+      <br>
+      <input type="radio" id="big" :value="config.size.big" v-model="picked" v-on:click="search" :disabled="loading">
+      <label for="big">Big set</label>
+      <br>
+    <table v-if="picked && !loading">
       <tr>
         <th v-for="(field, index) in config.tableFields">{{field.header}}</th>
       </tr>
@@ -13,7 +19,7 @@
 
 <script>
   let data = {
-    rows: 32
+    picked: false
   }
 
   export default {
@@ -22,7 +28,7 @@
     },
     methods: {
       search() {
-        this.$store.dispatch('search', this.rows)
+        this.$store.dispatch('search', this.picked)
       }
     },
     computed: {
@@ -31,10 +37,10 @@
       },
       config() {
         return this.$store.getters.config
+      },
+      loading() {
+        return this.$store.getters.loading
       }
-    },
-    created: function () {
-      this.search()
     }
   }
 </script>
