@@ -26,10 +26,10 @@
     "big": 1000,
     "small": 32
   },
+  "page_size": 10,
   "features": {
     "filtration": true,
     "pagination": true,
-    "paginationVariants": [5, 10, 15],
     "lineDuplicate": true,
     "likes": true
   },
