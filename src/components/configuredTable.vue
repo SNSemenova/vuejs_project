@@ -9,9 +9,13 @@
     <div v-show="picked && !loading">
       <table>
         <tr>
-          <th v-for="(field, index) in config.tableFields">{{field.header}}</th>
+          <th v-for="(field, index) in config.tableFields">
+            <a href="#" @click="sort(field.path)">
+              {{field.header}}
+            </a>
+          </th>
         </tr>
-        <tr v-for="(person, index) in results" :id="index">
+        <tr v-for="(person, index) in results">
           <td v-for="(field, index) in config.tableFields">{{person[field.path]}}</td>
         </tr>
       </table>
@@ -22,9 +26,12 @@
 
 <script>
   import pagination from './pagination.vue'
+  import orderBy from 'lodash.orderby'
 
   let data = {
-    picked: false
+    picked: false,
+    sortKey: 'id',
+    reverse: false
   }
 
   export default {
@@ -37,11 +44,24 @@
     methods: {
       search() {
         this.$store.dispatch('search', this.picked)
+      },
+      sort(field) {
+        if (this.sortKey == field)
+          if (this.reverse)
+            this.reverse = false
+          else this.reverse = true
+        else {
+          this.sortKey = field
+          this.reverse = false
+        }
       }
     },
     computed: {
       results() {
-        return this.$store.getters.results
+        let array = orderBy(this.$store.getters.results, this.sortKey)
+        if (this.reverse)
+          return array.reverse()
+        return array
       },
       config() {
         return this.$store.getters.config

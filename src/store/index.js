@@ -57,6 +57,7 @@ const store = new Vuex.Store({
       commit('set', { type: 'loading', items: true })
       const url = this.getters.config.url
       const pageSize = this.getters.config.page_size
+      this.state.page = 0
       var resource = Vue.resource(url)
       resource.get({ rows: query}).then(function (response) {
         const results = response.data
