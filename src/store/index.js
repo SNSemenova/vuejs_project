@@ -70,6 +70,13 @@ const store = new Vuex.Store({
     },
     changePage({ commit }, query) {
       commit(query, 'page')
+    },
+    addFavorite({ commit }, query) {
+      let array = this.getters.results
+      let index = array.findIndex(function(el) {
+        return el === query
+      })
+      this.getters.results[index].favorite = true
     }
   }
 })

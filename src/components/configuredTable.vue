@@ -7,8 +7,10 @@
     <label for="big">Big set</label>
     <br>
     <div v-show="picked && !loading">
+      <input v-model="filter" placeholder="Filter users by name">
       <table>
         <tr>
+          <th>favorite</th>
           <th v-for="(field, index) in config.tableFields">
             <a href="#" @click="sort(field.path)">
               {{field.header}}
@@ -16,6 +18,7 @@
           </th>
         </tr>
         <tr v-for="(person, index) in results">
+          <a href="#" @click="addFavorite(person)">favorite</a>
           <td v-for="(field, index) in config.tableFields">{{person[field.path]}}</td>
         </tr>
       </table>
@@ -31,7 +34,8 @@
   let data = {
     picked: false,
     sortKey: 'id',
-    reverse: false
+    reverse: false,
+    filter: ''
   }
 
   export default {
@@ -54,11 +58,20 @@
           this.sortKey = field
           this.reverse = false
         }
+      },
+      addFavorite(item) {
+        this.$store.dispatch('addFavorite', item)
       }
     },
     computed: {
       results() {
         let array = orderBy(this.$store.getters.results, this.sortKey)
+        let filter = this.filter
+        if (filter != '')
+          array = array.filter(function(el) {
+            return el.firstName.toLowerCase().indexOf(filter.toLowerCase()) > -1
+              || el.favorite;
+          })
         if (this.reverse)
           return array.reverse()
         return array
