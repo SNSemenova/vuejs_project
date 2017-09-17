@@ -1,0 +1,8 @@
+.favorite {
+  color: dodgerblue;
+  text-decoration: none;
+}
+
+.favorite.active {
+  color: gold;
+}

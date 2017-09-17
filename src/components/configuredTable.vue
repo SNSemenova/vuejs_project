@@ -10,7 +10,7 @@
       <input v-model="filter" placeholder="Filter users by name">
       <table>
         <tr>
-          <th>favorite</th>
+          <th>★</th>
           <th v-for="(field, index) in config.tableFields">
             <a href="#" @click="sort(field.path)">
               {{field.header}}
@@ -18,7 +18,8 @@
           </th>
         </tr>
         <tr v-for="(person, index) in results">
-          <a href="#" @click="addFavorite(person)">favorite</a>
+          <a href="#" class="favorite" @click="addFavorite(person)"
+             v-bind:class="{ active: favorite.indexOf(person.id) != -1 }">★</a>
           <td v-for="(field, index) in config.tableFields">{{person[field.path]}}</td>
         </tr>
       </table>
@@ -35,7 +36,9 @@
     picked: false,
     sortKey: 'id',
     reverse: false,
-    filter: ''
+    filter: '',
+    isActive: false,
+    favorite: []
   }
 
   export default {
@@ -60,7 +63,16 @@
         }
       },
       addFavorite(item) {
-        this.$store.dispatch('addFavorite', item)
+        let array = this.favorite
+        let index = array.indexOf(item.id)
+        if (index != -1) {
+          array.splice(index, 1)
+          this.$store.dispatch('addFavorite', { item: item, boolean: false })
+        }
+        else {
+          array.push(item.id)
+          this.$store.dispatch('addFavorite', { item: item, boolean: true })
+        }
       }
     },
     computed: {
@@ -87,5 +99,5 @@
 </script>
 
 <style lang="css">
-    @import '../style/table.css';
+  @import '../style/table.css';
 </style>

@@ -74,9 +74,9 @@ const store = new Vuex.Store({
     addFavorite({ commit }, query) {
       let array = this.getters.results
       let index = array.findIndex(function(el) {
-        return el === query
+        return el === query.item
       })
-      this.getters.results[index].favorite = true
+      this.getters.results[index].favorite = query.boolean
     }
   }
 })
