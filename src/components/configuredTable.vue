@@ -6,7 +6,7 @@
     <input type="radio" id="big" :value="config.size.big" v-model="picked" v-on:click="search" :disabled="loading">
     <label for="big">Big set</label>
     <br>
-    <div v-show="picked && !loading">
+    <div v-if="picked && !loading && !error">
       <input v-model="filter" placeholder="Filter users by name">
       <table>
         <tr>
@@ -26,7 +26,7 @@
       <pagination @pageChanged="results"></pagination>
       <br>
       <!--TODO remove hardcode and add data to config.json -->
-      <div v-show="show">
+      <div v-if="show">
         Выбран пользователь <b> {{show.firstName}} {{show.lastName}} </b> <br>
         Описание:<br>
         <textarea>
@@ -37,6 +37,10 @@
         Провинция/штат: <b> {{show.adress.state}} </b><br>
         Индекс: <b> {{show.adress.zip}} </b>
       </div>
+    </div>
+    <div v-show="error">
+      <br>
+      Server error. Please, try later.
     </div>
   </div>
 </template>
@@ -115,6 +119,9 @@
       },
       loading() {
         return this.$store.getters.loading
+      },
+      error() {
+        return this.$store.getters.error
       }
     }
   }

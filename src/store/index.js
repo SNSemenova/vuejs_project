@@ -12,7 +12,8 @@ const store = new Vuex.Store({
     config: config,
     loading: false,
     page: 0,
-    totalPages: 0
+    totalPages: 0,
+    error: false
   },
   getters: {
     results(state) {
@@ -39,6 +40,9 @@ const store = new Vuex.Store({
     },
     currentPage(state) {
       return state.page + 1
+    },
+    error(state) {
+      return state.error
     }
   },
   mutations: {
@@ -61,11 +65,13 @@ const store = new Vuex.Store({
       var resource = Vue.resource(url)
       resource.get({ rows: query}).then(function (response) {
         const results = response.data
+        commit('set', { type: 'error', items: false })
         commit('set', { type: 'results', items: results })
         commit('set', { type: 'totalPages', items: Math.ceil(results.length / pageSize) })
         commit('set', { type: 'loading', items: false })
       }, function (error) {
-        console.log(error)
+        commit('set', { type: 'error', items: true })
+        commit('set', { type: 'loading', items: false })
       })
     },
     changePage({ commit }, query) {
