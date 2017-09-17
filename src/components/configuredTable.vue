@@ -6,7 +6,7 @@
     <input type="radio" id="big" :value="config.size.big" v-model="picked" v-on:click="search" :disabled="loading">
     <label for="big">Big set</label>
     <br>
-    <div v-show="picked && !loading">
+    <div v-show="picked && !loading && !error">
       <table>
         <tr>
           <th v-for="(field, index) in config.tableFields">
@@ -20,6 +20,10 @@
         </tr>
       </table>
       <pagination @pageChanged="results"></pagination>
+    </div>
+    <div v-show="error">
+      <br>
+      Server error. Please, try later.
     </div>
   </div>
 </template>
@@ -68,6 +72,9 @@
       },
       loading() {
         return this.$store.getters.loading
+      },
+      error() {
+        return this.$store.getters.error
       }
     }
   }
