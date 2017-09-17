@@ -1,4 +1,4 @@
-# my-project
+# table-view
 
 > A Vue.js project
 

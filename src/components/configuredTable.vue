@@ -17,13 +17,26 @@
             </a>
           </th>
         </tr>
-        <tr v-for="(person, index) in results">
-          <a href="#" class="favorite" @click="addFavorite(person)"
+        <tr v-for="(person, index) in results" v-on:click="show = person">
+          <a href="#" class="favorite" v-on:click="addFavorite(person)"
              v-bind:class="{ active: favorite.indexOf(person.id) != -1 }">★</a>
           <td v-for="(field, index) in config.tableFields">{{person[field.path]}}</td>
         </tr>
       </table>
       <pagination @pageChanged="results"></pagination>
+      <br>
+      <!--TODO remove hardcode and add data to config.json -->
+      <div v-show="show">
+        Выбран пользователь <b> {{show.firstName}} {{show.lastName}} </b> <br>
+        Описание:<br>
+        <textarea>
+          {{show.description}}
+        </textarea><br>
+        Адрес проживания: <b> {{show.adress.streetAddress}} </b><br>
+        Город: <b> {{show.adress.city}} </b><br>
+        Провинция/штат: <b> {{show.adress.state}} </b><br>
+        Индекс: <b> {{show.adress.zip}} </b>
+      </div>
     </div>
   </div>
 </template>
@@ -38,7 +51,8 @@
     reverse: false,
     filter: '',
     isActive: false,
-    favorite: []
+    favorite: [],
+    show: false
   }
 
   export default {
@@ -61,6 +75,14 @@
           this.sortKey = field
           this.reverse = false
         }
+      },
+      showObject(obj) {
+        let keys = Object.keys(obj)
+        let buildedString = ""
+        keys.forEach(key => {
+          buildedString += key + ": " + obj[key] + " "
+        })
+        return buildedString
       },
       addFavorite(item) {
         let array = this.favorite
