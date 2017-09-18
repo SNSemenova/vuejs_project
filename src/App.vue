@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <configured-table />
-    <pulse-loader v-if="loading"/>
+    <configured-table></configured-table>
+    <pulse-loader v-if="loading"></pulse-loader>
   </div>
 </template>
 

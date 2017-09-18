@@ -11,7 +11,7 @@
       <table>
         <tr>
           <th>★</th>
-          <th v-for="(field, index) in config.tableFields">
+          <th v-for="field in config.tableFields">
             <span v-if="reverse"> ▲ </span>
             <span v-else> ▼ </span>
             <a href="#" @click="sort(field.path)">
@@ -19,10 +19,10 @@
             </a>
           </th>
         </tr>
-        <tr v-for="(person, index) in results" v-on:click="show = person">
+        <tr v-for="person in results" v-on:click="show = person">
           <a href="#" class="favorite" v-on:click="addFavorite(person)"
              v-bind:class="{ active: favorite.indexOf(person.id) != -1 }">★</a>
-          <td v-for="(field, index) in config.tableFields">{{person[field.path]}}</td>
+          <td v-for="field in config.tableFields">{{person[field.path]}}</td>
         </tr>
       </table>
       <pagination @pageChanged="results"></pagination>
@@ -49,7 +49,6 @@
 
 <script>
   import pagination from './pagination.vue'
-  import orderBy from 'lodash.orderby'
 
   let data = {
     picked: false,
@@ -59,7 +58,7 @@
     isActive: false,
     favorite: [],
     show: false
-  }
+  };
 
   export default {
     components: {
@@ -73,48 +72,42 @@
         this.$store.dispatch('search', this.picked)
       },
       sort(field) {
-        if (this.sortKey == field)
-          if (this.reverse)
-            this.reverse = false
-          else this.reverse = true
+        this.$store.dispatch('setState', {type: 'sortKey', field: field});
+        if (this.sortKey === field)
+          this.reverse = !this.reverse;
         else {
-          this.sortKey = field
+          this.sortKey = field;
           this.reverse = false
         }
+        this.$store.dispatch('setState', {type: 'reverse', field: this.reverse})
       },
       showObject(obj) {
-        let keys = Object.keys(obj)
-        let buildedString = ""
+        let keys = Object.keys(obj);
+        let buildedString = "";
         keys.forEach(key => {
           buildedString += key + ": " + obj[key] + " "
-        })
+        });
         return buildedString
       },
       addFavorite(item) {
-        let array = this.favorite
-        let index = array.indexOf(item.id)
-        if (index != -1) {
-          array.splice(index, 1)
+        let array = this.favorite;
+        let index = array.indexOf(item.id);
+        if (index !== -1) {
+          array.splice(index, 1);
           this.$store.dispatch('addFavorite', { item: item, boolean: false })
         }
         else {
-          array.push(item.id)
+          array.push(item.id);
           this.$store.dispatch('addFavorite', { item: item, boolean: true })
         }
       }
     },
     computed: {
       results() {
-        let array = orderBy(this.$store.getters.results, this.sortKey)
-        let filter = this.filter
-        if (filter != '')
-          array = array.filter(function(el) {
-            return el.firstName.toLowerCase().indexOf(filter.toLowerCase()) > -1
-              || el.favorite;
-          })
-        if (this.reverse)
-          return array.reverse()
-        return array
+        if (this.filter !== '') {
+          this.$store.dispatch('setState', {type: 'filter', field: this.filter})
+        }
+        return this.$store.getters.results
       },
       config() {
         return this.$store.getters.config
