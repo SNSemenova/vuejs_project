@@ -12,6 +12,8 @@
         <tr>
           <th>★</th>
           <th v-for="(field, index) in config.tableFields">
+            <span v-if="reverse"> ▲ </span>
+            <span v-else> ▼ </span>
             <a href="#" @click="sort(field.path)">
               {{field.header}}
             </a>
