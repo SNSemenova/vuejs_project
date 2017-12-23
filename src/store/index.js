@@ -23,12 +23,10 @@ const store = new Vuex.Store({
     results(state) {
       let pageSize = state.config.page_size;
       let array = state.results;
-      if (state.filter !== '') {
-        array = array.filter(function (el) {
-          return el.firstName.toLowerCase().indexOf(state.filter.toLowerCase()) > -1
-            || el.favorite;
-        });
-      }
+      array = array.filter(function (el) {
+        return el.firstName.toLowerCase().indexOf(state.filter.toLowerCase()) > -1
+          || el.favorite;
+      });
       state.totalPages = Math.ceil(array.length / pageSize);
       let set = orderBy(array, state.sortKey);
       if (state.reverse) {

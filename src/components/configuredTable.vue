@@ -67,6 +67,11 @@
     data: function () {
       return data
     },
+    watch: {
+      filter () {
+        this.$store.dispatch('setState', {type: 'filter', field: this.filter})
+      }
+    },
     methods: {
       search() {
         this.$store.dispatch('search', this.picked)
@@ -104,9 +109,6 @@
     },
     computed: {
       results() {
-        if (this.filter !== '') {
-          this.$store.dispatch('setState', {type: 'filter', field: this.filter})
-        }
         return this.$store.getters.results
       },
       config() {
